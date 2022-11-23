@@ -1,0 +1,74 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+
+        maven {
+            allowInsecureProtocol = true
+            url "https://maven.geelib.360.cn/nexus/service/rest/repository/browse/replugin/"
+        }
+        maven {
+            allowInsecureProtocol = true
+            url 'https://developer.huawei.com/repo/' }
+        maven{
+            allowInsecureProtocol = true
+            url "https://10.33.48.56:8081/repository/maven-releases/"}
+
+        maven {
+            allowInsecureProtocol = true
+            url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+        maven {
+            allowInsecureProtocol = true
+            url 'https://maven.aliyun.com/repository/jcenter/' }
+        maven {
+            allowInsecureProtocol = true
+            url 'https://maven.aliyun.com/repository/gradle-plugin/' }
+
+        maven {
+            allowInsecureProtocol = true
+            url "https://mvn.gt.igexin.com/nexus/content/repositories/releases/"
+        }
+        maven {
+            allowInsecureProtocol = true
+            url 'https://jitpack.io' }
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+
+        maven {
+            allowInsecureProtocol = true
+            url "https://maven.geelib.360.cn/nexus/service/rest/repository/browse/replugin/"
+        }
+        maven {
+            allowInsecureProtocol = true
+            url 'https://developer.huawei.com/repo/' }
+        maven{
+            allowInsecureProtocol = true
+            url "https://10.33.48.56:8081/repository/maven-releases/"}
+
+        maven {
+            allowInsecureProtocol = true
+            url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+        maven {
+            allowInsecureProtocol = true
+            url 'https://maven.aliyun.com/repository/jcenter/' }
+        maven {
+            allowInsecureProtocol = true
+            url 'https://maven.aliyun.com/repository/gradle-plugin/' }
+
+        maven {
+            allowInsecureProtocol = true
+            url "https://mvn.gt.igexin.com/nexus/content/repositories/releases/"
+        }
+        maven {
+            allowInsecureProtocol = true
+            url 'https://jitpack.io' }
+        mavenCentral()
+    }
+}
+rootProject.name = "My Application"
+include ':app'
