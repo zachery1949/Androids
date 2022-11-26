@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class jdkstudy {
     public static void main(String []args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
@@ -23,6 +24,13 @@ public class jdkstudy {
         System.out.println("a2:"+arr2.length);
         System.out.println("list:"+list.size());
         System.out.println("s:"+s.length());
+        System.out.println("*****************");
+
+        System.out.println("hashmap的使用");
+        HashMap<String,String> hashMap = new HashMap<>();
+        hashMap.put("zhangsan","123");
+        hashMap.put("lisi","456");
+        System.out.println("zhangsan："+hashMap.get("zhangsan"));
         System.out.println("*****************");
     }
 }
