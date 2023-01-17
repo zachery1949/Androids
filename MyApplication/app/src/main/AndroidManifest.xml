@@ -56,6 +56,14 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
+            android:name=".GlSurface.GlSurfaceActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".JniActivity"
             android:exported="true">
 
@@ -63,19 +71,16 @@
         <activity
             android:name=".ProxyPattern.ProxyActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
-    <service
-        android:name=".ProxyPattern.BankService"
-        android:exported="true"
-        android:process="com.service.BankService">
-        <intent-filter >
-            <action android:name="com.example.myapplication.ProxyPattern.BankService"></action>
-        </intent-filter>
-    </service>
+<!--    <service-->
+<!--        android:name=".ProxyPattern.BankService"-->
+<!--        android:exported="true"-->
+<!--        android:process="com.service.BankService">-->
+<!--        <intent-filter >-->
+<!--            <action android:name="com.example.myapplication.ProxyPattern.BankService"></action>-->
+<!--        </intent-filter>-->
+<!--    </service>-->
 
         <activity
             android:name=".MainActivity"
