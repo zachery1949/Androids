@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 
@@ -15,11 +16,21 @@ import com.example.myapplication.R;
 
 
 public class ProxyActivity extends AppCompatActivity {
-    BankBinder mBankBinder;
+    /*
+     * 同一进程 BankBinder extends Binder implements IBank
+     * 跨进程 BankBinder extends IBankAidl.Stub
+     */
+//    BankBinder mBankBinder;
+    IBankAidl mBankBinder;
     ServiceConnection serviceConnection = new ServiceConnection() {
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder service) {
-        mBankBinder = (BankBinder)service;
+        /*
+         * 同一进程 (BankBinder)service
+         * 跨进程 Stub.asInterface(service)
+         */
+        //        mBankBinder = (BankBinder)service;
+        mBankBinder = IBankAidl.Stub.asInterface(service);
         Log.d("TAG", "onServiceConnected: ");
     }
 
@@ -38,7 +49,12 @@ public class ProxyActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d("TAG", "onClick123: ");
-                String qwe = mBankBinder.openAccount("123","456");
+                String qwe = null;
+                try {
+                    qwe = mBankBinder.openAccount("123","456");
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 Log.d("TAG", "onClick123: "+qwe);
             }
         });

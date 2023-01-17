@@ -70,7 +70,8 @@
         </activity>
     <service
         android:name=".ProxyPattern.BankService"
-        android:exported="true">
+        android:exported="true"
+        android:process="com.service.BankService">
         <intent-filter >
             <action android:name="com.example.myapplication.ProxyPattern.BankService"></action>
         </intent-filter>
