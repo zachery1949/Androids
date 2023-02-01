@@ -11,9 +11,11 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.DelayQueue;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
@@ -63,30 +65,33 @@ public class TestThreadPool {
             return false;
     }
 
-    public static void main (String[] args) throws Exception {
+    public static void main (String[] args) throws InterruptedException, ExecutionException {
+        testCallable();
 //        testThreadPoolExecutor();
 //        Boolean b = isNumTag("3001234561");
 //        System.out.println(" b result:" + b);
 
 //            userTags.put(rUserId,rtagnum);
-            String s = userTags.get(rUserId);
-            if(null==s || isEmptyString(s)){
-                if(isNumTag(rtagnum)){
-                    userIds.put(rtagnum, rUserId);
-                    userTags.put(rUserId,rtagnum);
-                    System.out.println("init userTags");
-                } else {
-//                Log.d(TAG, "stream.getTag() is not number");
-                    System.out.println("stream.getTag() is not number");
-                }
-
-            } else{
-//            Log.d("lzxun", "userTags is inited by RCRTCMediaType.VIDEO");
-                System.out.println("userTags is inited by RCRTCMediaType.VIDEO");
-            }
-            System.out.println("finish");
 
 
+    }
+
+
+
+    public static void testCallable() throws ExecutionException, InterruptedException {
+        // 创建Callable
+        MyCallable call = new MyCallable(10);
+        // 创建任务
+        FutureTask<Integer> task = new FutureTask<Integer>(call);
+        // 新建线程，设置任务
+        Thread thread = new Thread(task);
+        // 启动子线程
+        thread.start();
+        long begin = System.currentTimeMillis();
+        System.out.println("已启动子线程");
+        // 调用get方法会阻塞用户线程，如不调用，用户线程会继续往下执行
+        Integer sum = task.get();
+        System.out.println("结果" + sum + ",耗时:" + (System.currentTimeMillis() - begin) / 1000);
     }
     public static void testThreadPoolExecutor() throws Exception {
         //基础参数
