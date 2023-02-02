@@ -3,16 +3,11 @@ pluginManagement {
         gradlePluginPortal()
         google()
 
-        maven {
-            allowInsecureProtocol = true
-            url "https://maven.geelib.360.cn/nexus/service/rest/repository/browse/replugin/"
-        }
+
         maven {
             allowInsecureProtocol = true
             url 'https://developer.huawei.com/repo/' }
-        maven{
-            allowInsecureProtocol = true
-            url "https://10.33.48.56:8081/repository/maven-releases/"}
+
 
         maven {
             allowInsecureProtocol = true
@@ -39,16 +34,11 @@ dependencyResolutionManagement {
     repositories {
         google()
 
-        maven {
-            allowInsecureProtocol = true
-            url "https://maven.geelib.360.cn/nexus/service/rest/repository/browse/replugin/"
-        }
+
         maven {
             allowInsecureProtocol = true
             url 'https://developer.huawei.com/repo/' }
-        maven{
-            allowInsecureProtocol = true
-            url "https://10.33.48.56:8081/repository/maven-releases/"}
+
 
         maven {
             allowInsecureProtocol = true

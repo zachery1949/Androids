@@ -55,4 +55,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.google.auto.service:auto-service:1.0'
     annotationProcessor 'com.google.auto.service:auto-service:1.0'
+    implementation 'com.squareup.leakcanary:leakcanary-android:2.7'
+//    implementation 'me.weishu:epic:0.8.1-c'
+//    implementation 'com.github.tiann:epic:0.11.2'
+    api 'com.github.tiann:epic:0.11.2'
+    api 'com.github.tiann:epic:0.11.2@aar'
 }
