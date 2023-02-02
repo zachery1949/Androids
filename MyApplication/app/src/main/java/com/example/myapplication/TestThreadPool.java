@@ -3,13 +3,17 @@ package com.example.myapplication;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -21,6 +25,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -66,14 +72,20 @@ public class TestThreadPool {
     }
 
     public static void main (String[] args) throws InterruptedException, ExecutionException {
-        testCallable();
+//        testCallable();
 //        testThreadPoolExecutor();
 //        Boolean b = isNumTag("3001234561");
 //        System.out.println(" b result:" + b);
 
 //            userTags.put(rUserId,rtagnum);
+        System.out.println(Thread.currentThread().getName() + " main");
 
-
+        try {
+            testThreadPoolExecutor();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Exception:"+e);
+        }
     }
 
 
@@ -93,10 +105,24 @@ public class TestThreadPool {
         Integer sum = task.get();
         System.out.println("结果" + sum + ",耗时:" + (System.currentTimeMillis() - begin) / 1000);
     }
+    /**
+     * 线程安全的队列
+     */
+    static Queue<String> queue = new ConcurrentLinkedQueue<String>();
+
+    static {
+        //入队列
+        for (int i = 0; i < 9; i++) {
+            queue.add("task-" + i);
+        }
+    }
+
     public static void testThreadPoolExecutor() throws Exception {
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~
         //基础参数
         int corePoolSize=2;//最小活跃线程数
-        int maximumPoolSize=5;//最大活跃线程数
+        int maximumPoolSize=2;//最大活跃线程数
         int keepAliveTime=5;//指定线程池中线程空闲超过 5s 后将被回收
         TimeUnit unit = TimeUnit.SECONDS;//keepAliveTime 单位
         //阻塞队列
@@ -104,15 +130,14 @@ public class TestThreadPool {
         //1 有界队列
         workQueue = new ArrayBlockingQueue<>(5);//基于数组的先进先出（FIFO）队列，支持公平锁和非公平锁，有界
         workQueue = new LinkedBlockingQueue<>();//基于链表的先进先出（FIFO）队列，默认长度为 Integer.MaxValue 有OOM危险，有界
-        workQueue = new LinkedBlockingDeque(); //一个由链表结构组成的,双向阻塞队列，有界
+
         //2 无界队列
         workQueue = new PriorityBlockingQueue(); //支持优先级排序的无限队列，默认自然排序，可以实现 compareTo()方法指定排序规则，不能保证同优先级元素的顺序，无界。
         workQueue = new DelayQueue(); //一个使用优先级队列（PriorityQueue）实现的无界延时队列，在创建时可以指定多久才能从队列中获取当前元素。只有延时期满后才能从队列中获取元素。
         workQueue = new LinkedTransferQueue(); //一个由链表结构组成的,无界阻塞队列
         //3 同步移交队列
         workQueue = new SynchronousQueue<>();//无缓冲的等待队列，队列不存元素，每个put操作必须等待take操作，否则无法添加元素，支持公平非公平锁，无界
-
-
+//        workQueue = new LinkedBlockingDeque(4); //一个由链表结构组成的,双向阻塞队列，有界
         //拒绝策略
         RejectedExecutionHandler rejected = null;
         rejected = new ThreadPoolExecutor.AbortPolicy();//默认，队列满了丢任务抛出异常
@@ -123,36 +148,60 @@ public class TestThreadPool {
 
         //使用的线程池
         ExecutorService threadPool = null;
-        threadPool = Executors.newCachedThreadPool();//有缓冲的线程池，线程数 JVM 控制
-        threadPool = Executors.newFixedThreadPool(3);//固定大小的线程池
-        threadPool = Executors.newScheduledThreadPool(2);
-        threadPool = Executors.newSingleThreadExecutor();//单线程的线程池，只有一个线程在工作
+//        threadPool = Executors.newCachedThreadPool();//有缓冲的线程池，线程数 JVM 控制
+//        threadPool = Executors.newFixedThreadPool(3);//固定大小的线程池
+//        threadPool = Executors.newScheduledThreadPool(2);
+//        threadPool = Executors.newSingleThreadExecutor();//单线程的线程池，只有一个线程在工作
         threadPool = new ThreadPoolExecutor(
-                corePoolSize,
-                maximumPoolSize,
-                keepAliveTime,
-                unit,
+                0,
+                Integer.MAX_VALUE,
+                60L,
+                TimeUnit.SECONDS,
                 workQueue,
                 rejected);//默认线程池，可控制参数比较多
         //执行无返回值线程
-        TaskRunnable taskRunnable = new TaskRunnable();
+        TaskRunnable taskRunnable;
+        taskRunnable = new TaskRunnable(1);
         threadPool.execute(taskRunnable);
-        List<Future<String>> futres = new ArrayList<>();
-        for(int i=0;i<10;i++) {
-            //执行有返回值线程
-            TaskCallable taskCallable = new TaskCallable(i);
-            Future<String> future = threadPool.submit(taskCallable);
-            futres.add(future);
-        }
-        for(int i=0;i<futres.size();i++){
-            String result = futres.get(i).get();
-            System.out.println(i+" result = "+result);
-        }
+        System.out.println("阻塞队列长度：" + workQueue.size());
+        taskRunnable = new TaskRunnable(2);
+        threadPool.execute(taskRunnable);
+        System.out.println("阻塞队列长度：" + workQueue.size());
+        taskRunnable = new TaskRunnable(3);
+        threadPool.execute(taskRunnable);
+        System.out.println("阻塞队列长度：" + workQueue.size());
+        taskRunnable = new TaskRunnable(4);
+        threadPool.execute(taskRunnable);
+        System.out.println("阻塞队列长度：" + workQueue.size());
+        taskRunnable = new TaskRunnable(5);
+        threadPool.execute(taskRunnable);
+        System.out.println("阻塞队列长度：" + workQueue.size());
+        taskRunnable = new TaskRunnable(6);
+        threadPool.execute(taskRunnable);
+        System.out.println("阻塞队列长度：" + workQueue.size());
+        taskRunnable = new TaskRunnable(7);
+        threadPool.execute(taskRunnable);
+        System.out.println("阻塞队列长度：" + workQueue.size());
+//        List<Future<String>> futres = new ArrayList<>();
+//        for(int i=0;i<10;i++) {
+//            //执行有返回值线程
+//            TaskCallable taskCallable = new TaskCallable(i);
+//            Future<String> future = threadPool.submit(taskCallable);
+//            futres.add(future);
+//        }
+//        for(int i=0;i<futres.size();i++){
+//            String result = futres.get(i).get();
+//            System.out.println(i+" result = "+result);
+//        }
     }
     /**
      * 返回值的线程，使用 threadpool.execut() 执行
      */
     public static class TaskRunnable implements Runnable{
+        int mNum;
+        TaskRunnable(int num){
+            mNum = num;
+        }
         @Override
         public void run() {
             try {
@@ -160,7 +209,7 @@ public class TestThreadPool {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println(Thread.currentThread().getName() + " runnable result!");
+            System.out.println(Thread.currentThread().getName() + " runnable result! mNum:"+mNum);
         }
     }
     /**
