@@ -14,10 +14,15 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
-import com.zachary.mylibrary.ITest;
+import android.os.Environment;
+import android.util.Log;
+import dalvik.system.DexClassLoader;
+import java.io.File;
+import java.lang.reflect.Method;
 
 
 public class MainActivityGlass extends AppCompatActivity {
+    final static String TAG = MainActivityGlass.class.getSimpleName();
     private GlassLagerRelativeLayout mG40GroupView;
     private View mG40GlassView;
 
@@ -27,6 +32,42 @@ public class MainActivityGlass extends AppCompatActivity {
     private Button btn1;
     private Button btn2;
     private Button btn4;
+
+    /**
+     * 动态加载，app运行之后使用Dexclassloader加载dex文件，并使用反射调用dex文件中方法
+     */
+    private void getOutData(){
+        //        DexClassLoader dexClassLoader = new DexClassLoader("/sdcard/fix.dex", getCodeCacheDir().getAbsolutePath(), null, getClassLoader());
+
+        File optimizadDexOutputPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+File.separator+"mySdktmp.jar");
+        if(optimizadDexOutputPath.exists()){
+            Log.d(TAG, "getOutData: optimizadDexOutputPath is exit ");
+        } else {
+            Log.d(TAG, "getOutData: optimizadDexOutputPath is not exit ");
+            return;
+        }
+        File dexOutputDir = this.getDir("dex",0);
+        DexClassLoader dexClassLoader = new DexClassLoader(optimizadDexOutputPath.getAbsolutePath(),dexOutputDir.getAbsolutePath(),null,ClassLoader.getSystemClassLoader());
+        Class libProviderClazz = null;
+        try {
+            libProviderClazz = dexClassLoader.loadClass("com.zachary.mylibrary.ITest");
+            //遍历所有的方法
+            Method[] methods = libProviderClazz.getDeclaredMethods();
+            for (int i = 0;i<methods.length;i++){
+                Log.e("test",methods[i].toString());
+            }
+            //通过方法名获取func方法
+            Method func= libProviderClazz.getDeclaredMethod("testPrint");
+            //外部可以调用
+            func.setAccessible(true);
+            //调用该方法获得值
+            func.invoke(libProviderClazz.newInstance());
+            //Toast.makeText(this, string, Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,8 +86,9 @@ public class MainActivityGlass extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 layoutTop.scrollTo(0, -300);
-                ITest iTest = new ITest();
-                iTest.testPrint();
+                getOutData();
+//                ITest iTest = new ITest();
+//                iTest.testPrint();
 //                ITest iTest = new ITest();
             }
         });
