@@ -65,7 +65,11 @@ final static String TAG = JniActivity.class.getSimpleName();
 
 //        processView(this);
 //        tvShow.setText("hello zhujie");
-        Log.d("TAG", "onCreate: "+NDKtools.func());
+        NDKtools ndKtools = new NDKtools();
+        ndKtools.helloJniCanshu("ceshicanshu");
+        Student student = new Student();
+        ndKtools.JniCalljava(student);
+        //Log.d("TAG", "onCreate: "+ndKtools.helloJniCanshu("ceshi"););
     }
 
 

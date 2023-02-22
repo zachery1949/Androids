@@ -4,9 +4,17 @@
 #include <jni.h>
 #include <string>
 #include <android/log.h>
-
+#include<android/log.h>
 using namespace std;
 
+#ifndef LOG_TAG
+#define LOG_TAG "HELLO_JNI"
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO,LOG_TAG ,__VA_ARGS__) // 定义LOGI类型
+#define LOGW(...) __android_log_print(ANDROID_LOG_WARN,LOG_TAG ,__VA_ARGS__) // 定义LOGW类型
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG ,__VA_ARGS__) // 定义LOGE类型
+#define LOGF(...) __android_log_print(ANDROID_LOG_FATAL,LOG_TAG ,__VA_ARGS__) // 定义LOGF类型
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,8 +35,58 @@ JNIEXPORT jstring JNICALL Java_com_example_cpufull_NDKtools_NDKutils_FullCpu
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_example_myapplication_NDKtools_func(JNIEnv *env, jclass clazz) {
-    jclass staticclazz = env->FindClass("com/example/myapplication/Student");
-    jmethodID StaticshowID = env->GetStaticMethodID(staticclazz, "func2", "(Ljava/lang/String;I)V");
-    env->CallStaticVoidMethod(staticclazz,StaticshowID,env->NewStringUTF("Hello JNI456"),10);
+//    jclass staticclazz = env->FindClass("com/example/myapplication/Student");
+//    jmethodID StaticshowID = env->GetStaticMethodID(staticclazz, "func2", "(Ljava/lang/String;I)V");
+//    env->CallStaticVoidMethod(staticclazz,StaticshowID,env->NewStringUTF("Hello JNI456"),10);
     return env->NewStringUTF("Hello JNI123");
+}
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_example_myapplication_NDKtools_helloJni(JNIEnv *env, jobject thiz) {
+    return env->NewStringUTF("Hello JNI456");
+}
+
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_myapplication_NDKtools_helloJniCanshu(JNIEnv *env, jobject thiz, jstring canshu) {
+    char * name ="jniname";
+    LOGD("My name is %s.", name);
+    // (2) jstring 转换成 const char * charstr
+    const char *charstr = env->GetStringUTFChars(canshu, 0);
+    LOGD(" %s.", charstr);
+    // (3) 释放 const char *
+    env->ReleaseStringUTFChars(canshu, charstr);
+
+//    LOGD("123%s",name);
+}
+pthread_t pthread;//线程对象
+JavaVM* global_jvm;
+jobject  gInstance; //全局JNI对象引用
+void *threadDoThings(void *tmp){
+    //jobject * instance = static_cast<jobject *>(instancetmp);
+    JNIEnv* env;
+    if(global_jvm->AttachCurrentThread(&env, NULL)!=JNI_OK){
+        LOGD("error");
+        return NULL;
+    }
+    //获取类名
+    jclass  clazz = env->GetObjectClass(gInstance);
+    if(clazz == NULL) return NULL;
+    jmethodID  javaMethod = env->GetMethodID(clazz,"StudentHelloWorld","(Ljava/lang/String;)V");
+    if(javaMethod == NULL)return NULL;
+    const char * msg = "nancy";
+    jstring  jmsg = env->NewStringUTF(msg);
+    env->CallVoidMethod(gInstance,javaMethod,jmsg);
+    env->DeleteGlobalRef(gInstance);//在我们不需要gThis这个全局JNI对象应用时，可以将其删除
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_myapplication_NDKtools_JniCalljava(JNIEnv *env, jobject thiz, jobject instance) {
+
+
+    env->GetJavaVM(&global_jvm);
+    gInstance = env->NewGlobalRef(instance);
+    pthread_create(&pthread, NULL, threadDoThings, NULL);
 }

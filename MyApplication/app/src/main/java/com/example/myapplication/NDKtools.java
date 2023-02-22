@@ -6,4 +6,7 @@ public class NDKtools {
     }
 
     public static native String func();
+    public native String helloJni();
+    public native void helloJniCanshu(String canshu);
+    public native void JniCalljava(Student student);
 }
