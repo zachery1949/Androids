@@ -68,7 +68,8 @@ final static String TAG = JniActivity.class.getSimpleName();
         NDKtools ndKtools = new NDKtools();
         ndKtools.helloJniCanshu("ceshicanshu");
         Student student = new Student();
-        ndKtools.JniCalljava(student);
+        //ndKtools.JniCalljava(student);
+        ndKtools.JniConsumer();
         //Log.d("TAG", "onCreate: "+ndKtools.helloJniCanshu("ceshi"););
     }
 

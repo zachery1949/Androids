@@ -9,4 +9,5 @@ public class NDKtools {
     public native String helloJni();
     public native void helloJniCanshu(String canshu);
     public native void JniCalljava(Student student);
+    public native void JniConsumer();
 }

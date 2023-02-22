@@ -5,6 +5,7 @@
 #include <string>
 #include <android/log.h>
 #include<android/log.h>
+#include"BufferArea.h"
 using namespace std;
 
 #ifndef LOG_TAG
@@ -61,8 +62,27 @@ Java_com_example_myapplication_NDKtools_helloJniCanshu(JNIEnv *env, jobject thiz
 //    LOGD("123%s",name);
 }
 pthread_t pthread;//线程对象
+pthread_t pthreadp1;//生产者1
+pthread_t pthreadp2;//生产者2
+pthread_t pthreadp3;//生产者3
+pthread_t pthreadc1;//消费者1
+pthread_t pthreadc2;//消费者2
+pthread_t pthreadc3;//消费者3
+BufferArea *bufferArea;
 JavaVM* global_jvm;
 jobject  gInstance; //全局JNI对象引用
+void *threadProduct(void *tmp){
+    while(true){
+        sleep(2);
+        bufferArea->set();//生产产品
+    }
+}
+void *threadConsume(void *tmp){
+    while(true){
+        sleep(1);
+        bufferArea->get();//生产产品
+    }
+}
 void *threadDoThings(void *tmp){
     //jobject * instance = static_cast<jobject *>(instancetmp);
     JNIEnv* env;
@@ -89,4 +109,16 @@ Java_com_example_myapplication_NDKtools_JniCalljava(JNIEnv *env, jobject thiz, j
     env->GetJavaVM(&global_jvm);
     gInstance = env->NewGlobalRef(instance);
     pthread_create(&pthread, NULL, threadDoThings, NULL);
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_myapplication_NDKtools_JniConsumer(JNIEnv *env, jobject thiz) {
+    bufferArea = new BufferArea();
+    pthread_create(&pthreadp1, NULL, threadProduct, NULL);
+    pthread_create(&pthreadp2, NULL, threadProduct, NULL);
+    pthread_create(&pthreadp3, NULL, threadProduct, NULL);
+    pthread_create(&pthreadc1, NULL, threadConsume, NULL);
+    pthread_create(&pthreadc2, NULL, threadConsume, NULL);
+    pthread_create(&pthreadc3, NULL, threadConsume, NULL);
+//    bufferArea->set();
 }
