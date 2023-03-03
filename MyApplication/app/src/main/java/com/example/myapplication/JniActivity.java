@@ -1,20 +1,20 @@
 package com.example.myapplication;
 
+import androidx.annotation.LongDef;
 import androidx.appcompat.app.AppCompatActivity;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
-
-import java.io.File;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.reflect.Field;
 
 public class JniActivity extends AppCompatActivity {
 //    @BindView(R.id.tv_zhu)
@@ -67,21 +67,30 @@ final static String TAG = JniActivity.class.getSimpleName();
         findViewById(R.id.tv_zhu).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                        new Thread(){
-            @Override
-            public void run() {
-                File patchFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +"/apkPatch/patch");
-                String oldApkPath = UpdateUtil.getSelfApkPath(getApplicationContext());
-                File oldApk = new File(oldApkPath);
-                File newApk = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +"/apkPatch/new.apk");
-                if(!patchFile.exists() || !oldApk.exists()){
-                    Log.e(TAG, "onCreate: path is not exit");
-                    return;
-                }
-                Log.d(TAG, "run: file is OK");
-                ndKtools.patchAPK(oldApk.getAbsolutePath(),newApk.getAbsolutePath(), patchFile.getAbsolutePath());
-            }
-        }.start();
+                //用于rxjava测试
+                rxjavaTest rxjavat = new rxjavaTest();
+//                rxjavat.rxjavaTestNormal();
+//                rxjavat.rxjavaNormalAndSend();
+//                rxjavat.rxjavaNormalAndJustsend();
+//                rxjavat.rxjavaNormalAndJustsendAndfilter();
+                rxjavat.rxjavaNormalThread();
+                //用于rxjava测试 END
+
+//                        new Thread(){
+//            @Override
+//            public void run() {
+//                File patchFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +"/apkPatch/patch");
+//                String oldApkPath = UpdateUtil.getSelfApkPath(getApplicationContext());
+//                File oldApk = new File(oldApkPath);
+//                File newApk = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +"/apkPatch/new.apk");
+//                if(!patchFile.exists() || !oldApk.exists()){
+//                    Log.e(TAG, "onCreate: path is not exit");
+//                    return;
+//                }
+//                Log.d(TAG, "run: file is OK");
+//                ndKtools.patchAPK(oldApk.getAbsolutePath(),newApk.getAbsolutePath(), patchFile.getAbsolutePath());
+//            }
+//        }.start();
             }
         });
 //        processView(this);
