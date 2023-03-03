@@ -10,4 +10,5 @@ public class NDKtools {
     public native void helloJniCanshu(String canshu);
     public native void JniCalljava(Student student);
     public native void JniConsumer();
+    public native void patchAPK(String oldApkFile,String newApkFile,String patchFile);
 }

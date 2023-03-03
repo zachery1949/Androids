@@ -6,6 +6,13 @@
 #include <android/log.h>
 #include<android/log.h>
 #include"BufferArea.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include "bspatch.h"
+#ifdef __cplusplus
+}
+#endif
 using namespace std;
 
 #ifndef LOG_TAG
@@ -121,4 +128,22 @@ Java_com_example_myapplication_NDKtools_JniConsumer(JNIEnv *env, jobject thiz) {
     pthread_create(&pthreadc2, NULL, threadConsume, NULL);
     pthread_create(&pthreadc3, NULL, threadConsume, NULL);
 //    bufferArea->set();
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_myapplication_NDKtools_patchAPK(JNIEnv *env, jobject thiz, jstring old_apk_file,
+                                                 jstring new_apk_file, jstring patch_file) {
+    int argc = 4;
+    char * argv[argc];
+    argv[0] = "bspatch";
+    argv[1] = (char*) (env->GetStringUTFChars(old_apk_file, 0));
+    argv[2] = (char*) (env->GetStringUTFChars(new_apk_file, 0));
+    argv[3] = (char*) (env->GetStringUTFChars(patch_file, 0));
+
+    //调用合并的方法
+    main(argc, argv);
+
+    env->ReleaseStringUTFChars(old_apk_file, argv[1]);
+    env->ReleaseStringUTFChars(new_apk_file, argv[2]);
+    env->ReleaseStringUTFChars(patch_file, argv[3]);
 }

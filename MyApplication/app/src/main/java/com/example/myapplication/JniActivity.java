@@ -4,10 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import java.io.File;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -62,17 +64,41 @@ final static String TAG = JniActivity.class.getSimpleName();
         finally{
             Log.d(TAG, "Hello");
         }
-
+        findViewById(R.id.tv_zhu).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                        new Thread(){
+            @Override
+            public void run() {
+                File patchFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +"/apkPatch/patch");
+                String oldApkPath = UpdateUtil.getSelfApkPath(getApplicationContext());
+                File oldApk = new File(oldApkPath);
+                File newApk = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +"/apkPatch/new.apk");
+                if(!patchFile.exists() || !oldApk.exists()){
+                    Log.e(TAG, "onCreate: path is not exit");
+                    return;
+                }
+                Log.d(TAG, "run: file is OK");
+                ndKtools.patchAPK(oldApk.getAbsolutePath(),newApk.getAbsolutePath(), patchFile.getAbsolutePath());
+            }
+        }.start();
+            }
+        });
 //        processView(this);
 //        tvShow.setText("hello zhujie");
-        NDKtools ndKtools = new NDKtools();
+        ndKtools = new NDKtools();
         ndKtools.helloJniCanshu("ceshicanshu");
         Student student = new Student();
-        //ndKtools.JniCalljava(student);
-        ndKtools.JniConsumer();
+//        ndKtools.JniCalljava(student);
+//        ndKtools.JniConsumer();
+//        UpdateUtil util = new UpdateUtil(getApplicationContext());
+        
+
+
+
         //Log.d("TAG", "onCreate: "+ndKtools.helloJniCanshu("ceshi"););
     }
-
+    NDKtools ndKtools;
 
 
 }

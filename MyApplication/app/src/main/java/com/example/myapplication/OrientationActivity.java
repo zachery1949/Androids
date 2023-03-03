@@ -26,6 +26,7 @@ final static String TAG = OrientationActivity.class.getSimpleName();
         }
         setContentView(R.layout.activity_orientation);
         Log.d(TAG, "onCreate: ");
+
     }
 
     @Override
