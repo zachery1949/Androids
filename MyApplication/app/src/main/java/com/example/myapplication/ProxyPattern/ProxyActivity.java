@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.myapplication.R;
+import com.zachary.common.CommonMainActivity;
 
 
 public class ProxyActivity extends AppCompatActivity {
@@ -48,14 +49,16 @@ public class ProxyActivity extends AppCompatActivity {
         findViewById(R.id.bt_qwe).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("TAG", "onClick123: ");
-                String qwe = null;
-                try {
-                    qwe = mBankBinder.openAccount("123","456");
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                Log.d("TAG", "onClick123: "+qwe);
+                Intent intent = new Intent(ProxyActivity.this, CommonMainActivity.class);
+                startActivity(intent);
+//                Log.d("TAG", "onClick123: ");
+//                String qwe = null;
+//                try {
+//                    qwe = mBankBinder.openAccount("123","456");
+//                } catch (RemoteException e) {
+//                    e.printStackTrace();
+//                }
+//                Log.d("TAG", "onClick123: "+qwe);
             }
         });
         Intent intent = new Intent("com.example.myapplication.ProxyPattern.BankService");
