@@ -25,6 +25,7 @@ public class ProxyActivity extends AppCompatActivity {
      * 跨进程 BankBinder extends IBankAidl.Stub
      */
 //    BankBinder mBankBinder;
+    final static String TAG = ProxyActivity.class.getSimpleName();
     IBankAidl mBankBinder;
     ServiceConnection serviceConnection = new ServiceConnection() {
     @Override
@@ -47,6 +48,7 @@ public class ProxyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: ");
         ServiceFactory.getInstance().setIUserInstallService(new UserInstallService());
         setContentView(R.layout.activity_proxy);
 //        bt_qwe
@@ -70,6 +72,23 @@ public class ProxyActivity extends AppCompatActivity {
 //        intent.setClass()
         boolean result = bindService(intent,serviceConnection,BIND_AUTO_CREATE);
         Log.d("TAG", "onCreate bindService: "+result);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: ");
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: ");
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        Log.d(TAG, "onWindowFocusChanged: "+System.currentTimeMillis());
     }
 
     @Override
