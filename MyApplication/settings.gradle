@@ -64,3 +64,5 @@ rootProject.name = "My Application"
 include ':app'
 include ':mylibrary'
 include ':common'
+include ':AModule'
+include ':BModule'

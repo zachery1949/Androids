@@ -13,7 +13,10 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.myapplication.R;
+import com.zachary.amodule.AModuleMainActivity;
+import com.zachary.bmodule.UserInstallService;
 import com.zachary.common.CommonMainActivity;
+import com.zachary.common.ServiceFactory;
 
 
 public class ProxyActivity extends AppCompatActivity {
@@ -44,12 +47,13 @@ public class ProxyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ServiceFactory.getInstance().setIUserInstallService(new UserInstallService());
         setContentView(R.layout.activity_proxy);
 //        bt_qwe
         findViewById(R.id.bt_qwe).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ProxyActivity.this, CommonMainActivity.class);
+                Intent intent = new Intent(ProxyActivity.this, AModuleMainActivity.class);
                 startActivity(intent);
 //                Log.d("TAG", "onClick123: ");
 //                String qwe = null;
