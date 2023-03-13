@@ -66,4 +66,5 @@ dependencies {
     implementation project(path: ':common')
     implementation project(path: ':AModule')
     implementation project(path: ':BModule')
+    implementation 'io.github.idisfkj:android-startup:1.1.0'
 }
