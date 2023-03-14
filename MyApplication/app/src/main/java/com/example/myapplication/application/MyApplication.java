@@ -12,14 +12,14 @@ public class MyApplication extends Application {
     public MyApplication(){
 //        Debug.startMethodTracing("enjoy");
 //        Debug.stopMethodTracing();
-        new StartupManager.Builder()
-                .addStartup(new SampleFirstStartup())
-                .addStartup(new SampleSecondStartup())
-//                .addStartup(SampleThirdStartup())
-//                .addStartup(SampleFourthStartup())
-                .build(this)
-                .start()
-                .await();
+//        new StartupManager.Builder()
+//                .addStartup(new SampleFirstStartup())
+//                .addStartup(new SampleSecondStartup())
+////                .addStartup(SampleThirdStartup())
+////                .addStartup(SampleFourthStartup())
+//                .build(this)
+//                .start()
+//                .await();
     }
     @Override
     public void onCreate() {
