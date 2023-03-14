@@ -6,6 +6,11 @@
 #include <android/log.h>
 #include<android/log.h>
 #include"BufferArea.h"
+#include <rtmp.h> // 查找系统的环境变量 <>
+//#include <x264.h> // 查找系统的环境变量 <>
+#include "VideoChannel.h"
+#include "util.h"
+#include "safe_queue.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -146,4 +151,60 @@ Java_com_example_myapplication_NDKtools_patchAPK(JNIEnv *env, jobject thiz, jstr
     env->ReleaseStringUTFChars(old_apk_file, argv[1]);
     env->ReleaseStringUTFChars(new_apk_file, argv[2]);
     env->ReleaseStringUTFChars(patch_file, argv[3]);
+}
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_example_myapplication_RtmpMainActivity_stringFromJNI(JNIEnv *env, jobject thiz) {
+    std::string hello = "Hello from C++";
+    char version[50];
+    //  2.3
+    sprintf(version, "librtmp version: %d", RTMP_LibVersion());
+
+    // ___________________________________> 下面是x264 验证  视频编码
+    //x264_picture_t *picture = new x264_picture_t;
+
+    // ___________________________________> 下面是faac 验证 音频编码
+
+
+    return env->NewStringUTF(version);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_myapplication_DerryPusher_native_1init(JNIEnv *env, jobject thiz) {
+    // TODO: implement native_init()
+    LOGD("NDK CALL native_init");
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_myapplication_DerryPusher_native_1start(JNIEnv *env, jobject thiz, jstring path) {
+    // TODO: implement native_start()
+    LOGD("NDK CALL native_start");
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_myapplication_DerryPusher_native_1stop(JNIEnv *env, jobject thiz) {
+    // TODO: implement native_stop()
+    LOGD("NDK CALL native_stop");
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_myapplication_DerryPusher_native_1release(JNIEnv *env, jobject thiz) {
+    // TODO: implement native_release()
+    LOGD("NDK CALL native_release");
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_myapplication_DerryPusher_native_1initVideoEncoder(JNIEnv *env, jobject thiz,
+                                                                    jint width, jint height,
+                                                                    jint m_fps, jint bitrate) {
+    // TODO: implement native_initVideoEncoder()
+    LOGD("NDK CALL native_initVideoEncoder");
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_myapplication_DerryPusher_native_1pushVideo(JNIEnv *env, jobject thiz,
+                                                             jbyteArray data) {
+    // TODO: implement native_pushVideo()
+    LOGD("NDK CALL native_pushVideo");
 }
