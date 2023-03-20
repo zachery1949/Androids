@@ -62,6 +62,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
+        <activity android:name=".aidlStudy.AidlMainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".AudioMainActivity"
             android:exported="true">
@@ -134,11 +141,16 @@
         <activity
             android:name=".ProxyPattern.ProxyActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
+        <service
+            android:name=".aidlStudy.LanceService"
+            android:exported="true"
+            android:process="com.service.LanceService">
+            <intent-filter >
+                <action android:name="com.example.myapplication.aidlStudy.LanceService"></action>
+            </intent-filter>
+        </service>
     <service
         android:name=".ProxyPattern.BankService"
         android:exported="true"
