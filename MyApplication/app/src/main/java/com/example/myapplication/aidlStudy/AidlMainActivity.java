@@ -21,20 +21,9 @@ public class AidlMainActivity extends AppCompatActivity {
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
-            Parcel inData = Parcel.obtain();
-            Parcel outData = Parcel.obtain();
-            inData.writeString("这是参数");
-            try {
-                service.transact(100,inData,outData,0);
-                String result = outData.readString();
-                Log.d(TAG, "testData return: "+result);
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }finally {
-                inData.recycle();
-                outData.recycle();
-            }
-            Log.d(TAG, "onServiceConnected: 1111111111111");
+            Proxy proxy = new Proxy(service);
+            String result = proxy.testData("这是参数");
+            Log.d(TAG, "testData return: "+result);
         }
 
         @Override
