@@ -55,17 +55,16 @@ public class ProxyActivity extends AppCompatActivity {
         findViewById(R.id.bt_qwe).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ProxyActivity.this, AModuleMainActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(ProxyActivity.this, AModuleMainActivity.class);
+//                startActivity(intent);
 //                Log.d("TAG", "onClick123: ");
-//                String qwe = null;
-//                try {
-//                    qwe = mBankBinder.openAccount("123","456");
-//                } catch (RemoteException e) {
-//                    e.printStackTrace();
-//                }
-//                Log.d("TAG", "onClick123: "+qwe);
-            }
+                String qwe = null;
+                try {
+                    qwe = mBankBinder.openAccount("123","456");
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                Log.d("TAG", "onClick123: "+qwe);            }
         });
         Intent intent = new Intent("com.example.myapplication.ProxyPattern.BankService");
         intent.setPackage("com.example.myapplication");
