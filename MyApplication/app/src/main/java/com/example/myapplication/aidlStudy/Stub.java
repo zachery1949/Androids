@@ -2,6 +2,7 @@ package com.example.myapplication.aidlStudy;
 
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 import android.util.Log;
@@ -33,5 +34,17 @@ public class Stub extends Binder implements ILanceIInterface{
             default:
                 return super.onTransact(code, data, reply, flags);
         }
+    }
+
+    public Stub() {
+        attachInterface(this,"XXXYYY");
+    }
+
+    static ILanceIInterface asInterface(IBinder service){
+        IInterface iInterface = service.queryLocalInterface("XXXYYY");
+        if(iInterface!=null && iInterface instanceof ILanceIInterface){
+            return (ILanceIInterface)iInterface;
+        }
+        return new Proxy(service);
     }
 }

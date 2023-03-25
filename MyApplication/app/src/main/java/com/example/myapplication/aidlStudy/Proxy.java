@@ -5,12 +5,13 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.util.Log;
 
-public class Proxy {
+public class Proxy implements ILanceIInterface{
     IBinder mService;
     public Proxy(IBinder service) {
         mService = service;
     }
-    String testData(String s){
+    @Override
+    public String testData(String s){
         String result = null;
         Parcel inData = Parcel.obtain();
         Parcel outData = Parcel.obtain();
@@ -25,5 +26,10 @@ public class Proxy {
             outData.recycle();
         }
         return result;
+    }
+
+    @Override
+    public IBinder asBinder() {
+        return mService;
     }
 }

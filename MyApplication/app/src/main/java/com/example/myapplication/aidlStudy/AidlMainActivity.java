@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 import android.util.Log;
@@ -21,7 +22,10 @@ public class AidlMainActivity extends AppCompatActivity {
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
-            Proxy proxy = new Proxy(service);
+//            Proxy proxy = new Proxy(service);
+//            String result = proxy.testData("这是参数");
+//            Log.d(TAG, "testData return: "+result);
+            ILanceIInterface proxy = Stub.asInterface(service);
             String result = proxy.testData("这是参数");
             Log.d(TAG, "testData return: "+result);
         }
