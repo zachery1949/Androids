@@ -49,22 +49,22 @@ public class ProxyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate: ");
-        ServiceFactory.getInstance().setIUserInstallService(new UserInstallService());
+//        ServiceFactory.getInstance().setIUserInstallService(new UserInstallService());
         setContentView(R.layout.activity_proxy);
 //        bt_qwe
         findViewById(R.id.bt_qwe).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(ProxyActivity.this, AModuleMainActivity.class);
-//                startActivity(intent);
-//                Log.d("TAG", "onClick123: ");
-                String qwe = null;
-                try {
-                    qwe = mBankBinder.openAccount("123","456");
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                Log.d("TAG", "onClick123: "+qwe);            }
+                Intent intent = new Intent(ProxyActivity.this, AModuleMainActivity.class);
+                startActivity(intent);
+                Log.d("TAG", "onClick123: ");
+//                String qwe = null;
+//                try {
+//                    qwe = mBankBinder.openAccount("123","456");
+//                } catch (RemoteException e) {
+//                    e.printStackTrace();
+//                }
+                Log.d("TAG", "onClick123: ");            }
         });
         Intent intent = new Intent("com.example.myapplication.ProxyPattern.BankService");
         intent.setPackage("com.example.myapplication");
