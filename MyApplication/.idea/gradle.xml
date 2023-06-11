@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/BModule" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/common" />
+            <option value="$PROJECT_DIR$/consumer" />
             <option value="$PROJECT_DIR$/mylibrary" />
           </set>
         </option>
