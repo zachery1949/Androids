@@ -7,9 +7,13 @@ import android.os.IBinder;
 import androidx.annotation.Nullable;
 
 public class BankService extends Service {
+    BankBinder mBankBinder;
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return new BankBinder();
+        if(null == mBankBinder){
+            mBankBinder = new BankBinder();
+        }
+        return mBankBinder;
     }
 }
