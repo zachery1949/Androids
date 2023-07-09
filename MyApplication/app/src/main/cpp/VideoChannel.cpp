@@ -26,7 +26,7 @@ void VideoChannel::initVideoEncoder(int width, int height, int fps, int bitrate)
     // 防止重复初始化
     if (videoEncoder) {
         x264_encoder_close(videoEncoder);
-        videoEncoder = nullptr;
+        videoEncoder = 0;
     }
     if (pic_in) {
         x264_picture_clean(pic_in);
@@ -125,7 +125,7 @@ void VideoChannel::encodeData(signed char *data) {
         *(pic_in->img.plane[2] + i) = *(data + y_len + i * 2);
     }
 
-    x264_nal_t *nal = nullptr; // 通过H.264编码得到NAL数组（理解）
+    x264_nal_t *nal = 0; // 通过H.264编码得到NAL数组（理解）
     int pi_nal; // pi_nal是nal中输出的NAL单元的数量
     x264_picture_t pic_out; // 输出编码后图片 （编码后的图片）
 
