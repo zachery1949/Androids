@@ -17,6 +17,7 @@
             <option value="$PROJECT_DIR$/common" />
             <option value="$PROJECT_DIR$/consumer" />
             <option value="$PROJECT_DIR$/mylibrary" />
+            <option value="$PROJECT_DIR$/zachery_push" />
           </set>
         </option>
       </GradleProjectSettings>
