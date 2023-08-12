@@ -3,7 +3,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 
-typedef unsigned char   uint8_t;     //ÎÞ·ûºÅ8Î»Êý
+typedef unsigned char   uint8_t;     //ï¿½Þ·ï¿½ï¿½ï¿½8Î»ï¿½ï¿½
 
 #define MIN(a,b) (a)<(b)?(a):(b)
 //#define SIGLEFRAME_LEN (1024*125) //125K
@@ -14,6 +14,7 @@ typedef struct _QUEUE_NODE_
 	pthread_mutex_t mlock;
 	int datalen;
 	uint8_t data[SIGLEFRAME_LEN];
+	bool isConfig;
 } QUEUE_NODE;
 
 
@@ -37,13 +38,13 @@ class CQueue
 		*\\ return : real  input data lenth
 		*/
 		int push(uint8_t *data,int len);
-
+		int push(const unsigned char *data, int len, bool isConfig);
 		/*	
 		* \\ breif :get the data buffer pointer whith block, Manual release is required after use
 		*\\  param : **pdata , *plen :the queue data len
 		*\\  return -1; no data to get. other the que index will be return ,
 		*/
-		int getbuffer(uint8_t **pdata,int *plen);
+		int getbuffer(uint8_t **pdata,int *plen,bool *isConfig);
 		
 		/*
 		*\\ breif : get back the que data buffer

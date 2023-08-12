@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                           String url = et.getText().toString();
+                           String url = "rtsp://10.2.11.68:8555/test.264";
                             mVideoDecoder.openNewUrl(url);
                             Log.i("onTuch ", url);
                             //按下确定键后的事件

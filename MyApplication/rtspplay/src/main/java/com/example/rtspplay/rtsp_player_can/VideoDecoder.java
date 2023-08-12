@@ -30,7 +30,7 @@ public class VideoDecoder  {
     private final int mWidth=1920;
     private final int mHeight=1080;
     //if you want to save the input data to file, set bSave2file true
-    private final boolean bSave2file =true;
+    private final boolean bSave2file =false;
 
     public VideoDecoder(Surface surface)
     {
@@ -86,17 +86,17 @@ public class VideoDecoder  {
             while (isRunning) {
                 //Log.i("TRACK","getdat befor!");
                 int len = dataProvide.getNal(dataBuf, dataBuf.length);
-                Log.i("TRACK", "getdat after:"+len);
+                Log.i("TRACK", "getdat123 after:"+len);
                 if(len == -1){
                     //eof
                     decodeEnd();
-                    wirte2fileover();
+//                    wirte2fileover();
                     setRunning(false);
                     break;
                 }
                 else if(len >0){
                     decode(dataBuf,0,len);
-                   wirte2file(dataBuf,0,len);
+                   //wirte2file(dataBuf,0,len);
                 }
 
                 /* //按照 数据源输入的速度播放，来一帧播一帧，所以这延时不应该加
@@ -136,8 +136,10 @@ public class VideoDecoder  {
             dataBuf = new byte[1024*600];//要足够大
 
             //h264 格式
-            MediaFormat format = MediaFormat.createVideoFormat(MediaFormat.MIMETYPE_VIDEO_AVC, mWidth, mHeight);
-
+            MediaFormat format = MediaFormat.createVideoFormat(MediaFormat.MIMETYPE_VIDEO_HEVC, mWidth, mHeight);
+//            format.setInteger(MediaFormat.KEY_COLOR_FORMAT,0x7F420888);
+            format.setInteger(MediaFormat.KEY_BIT_RATE,mWidth*mHeight);
+            format.setInteger(MediaFormat.KEY_FRAME_RATE,30);
             //如果h264流文件中存在 sps pps 帧，（流起始就要求有sps pps）下面这些设置就没有用，会被覆盖
            // format.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, mHeight * mWidth);
            // format.setInteger(MediaFormat.KEY_MAX_HEIGHT, mHeight);
@@ -148,7 +150,7 @@ public class VideoDecoder  {
 
             try {
                 //创建解码器
-                decoder = MediaCodec.createDecoderByType(MediaFormat.MIMETYPE_VIDEO_AVC);
+                decoder = MediaCodec.createDecoderByType(MediaFormat.MIMETYPE_VIDEO_HEVC);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -184,15 +186,23 @@ public class VideoDecoder  {
             //从解码器请求获取一个输入缓冲区
             int inputBufferIndex = decoder.dequeueInputBuffer(DECODE_TIMEOUT_US);
             if(inputBufferIndex >= 0){
-                Log.i(DECODE, "video decoding");
+//                Log.i(DECODE, "video decoding");
                 ByteBuffer buffer = decoder.getInputBuffer(inputBufferIndex);
 
                 buffer.clear();
                 buffer.limit(length);
                 buffer.put(buf, offset, length);
                 //入队列，放入数据
-                decoder.queueInputBuffer(inputBufferIndex, 0, length,0,
-                        MediaCodec.BUFFER_FLAG_SYNC_FRAME);
+                int flag = 0;
+                int offset1 = 0;
+                if(length == 89){
+//                    flag = MediaCodec.BUFFER_FLAG_CODEC_CONFIG;
+//                    offset1 = 4;
+//                    length = length -4;
+                }
+                decoder.queueInputBuffer(inputBufferIndex, offset1, length,0,
+                        flag);
+                Log.i(TAG, "decode,queueInputBuffer, length:"+length);
             }else {
                 Log.i(DECODE, "video getInput timeout ----------to drop");
             }
@@ -216,31 +226,31 @@ public class VideoDecoder  {
     private File destfile = null;
     private FileOutputStream destfs =null;
     private BufferedOutputStream BufOs=null;
-    private void wirte2file(byte[] buf, int offset, int length){
-        if(bSave2file) {
-            if(BufOs ==null)
-            {
-                destfile = new File(dsetfilePath);
-                try {
-                    destfs = new FileOutputStream(destfile);
-                    BufOs= new BufferedOutputStream(destfs);
-                } catch (FileNotFoundException e) {
-                    // TODO: handle exception
-                    Log.i("TRACK","initerro"+e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-
-            try {
-                BufOs.write(buf, 0, length);
-                BufOs.flush();
-
-            } catch (Exception e) {
-                // TODO: handle exception
-            }
-
-        }
-    }
+//    private void wirte2file(byte[] buf, int offset, int length){
+//        if(bSave2file) {
+//            if(BufOs ==null)
+//            {
+//                destfile = new File(dsetfilePath);
+//                try {
+//                    destfs = new FileOutputStream(destfile);
+//                    BufOs= new BufferedOutputStream(destfs);
+//                } catch (FileNotFoundException e) {
+//                    // TODO: handle exception
+//                    Log.i("TRACK","initerro"+e.getMessage());
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            try {
+//                BufOs.write(buf, 0, length);
+//                BufOs.flush();
+//
+//            } catch (Exception e) {
+//                // TODO: handle exception
+//            }
+//
+//        }
+//    }
 
     private void wirte2fileover(){
         if(bSave2file) {
