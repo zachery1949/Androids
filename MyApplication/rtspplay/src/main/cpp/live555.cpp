@@ -31,7 +31,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 #include "jnilog.h"
 #include "liveMedia.hh"
 #include "BasicUsageEnvironment.hh"
-
+#include <memory>
+#include "Nalu.hpp"
 // Forward function definitions:
 
 // RTSP 'response handlers':
@@ -183,11 +184,11 @@ int live555_stop()
          return 0;
      };
  }
- int live555_requestFrameBuffer(unsigned char **pdata,int *plen)
+ int live555_requestFrameBuffer(unsigned char **pdata,int *plen,bool *isConfig)
  {
 
      if(g_pQueue) {
-         return g_pQueue->getbuffer(pdata, plen);
+         return g_pQueue->getbuffer(pdata, plen,isConfig);
      }else{
          return 0;
      };
@@ -356,7 +357,7 @@ void setupNextSubsession(RTSPClient* rtspClient) {
                 env << "client ports " << scs.subsession->clientPortNum() << "-" << scs.subsession->clientPortNum()+1;
             }
             env << ")\n";
-
+            TRACK("setupNextSubsession,env:%s",env.getResultMsg());
 #if 1
             if( scs.subsession->rtpSource() != NULL )
             {
@@ -390,6 +391,7 @@ void setupNextSubsession(RTSPClient* rtspClient) {
             }
 #endif
             // Continue setting up this subsession, by sending a RTSP "SETUP" command:
+            TRACK("sendSetupCommand");
             rtspClient->sendSetupCommand(*scs.subsession, continueAfterSETUP, False, REQUEST_STREAMING_OVER_TCP);
         }
         return;
@@ -398,8 +400,12 @@ void setupNextSubsession(RTSPClient* rtspClient) {
     // We've finished setting up all of the subsessions.  Now, send a RTSP "PLAY" command to start the streaming:
     if (scs.session->absStartTime() != NULL) {
         // Special case: The stream is indexed by 'absolute' time, so send an appropriate "PLAY" command:
+        TRACK("absStartTime");
+
         rtspClient->sendPlayCommand(*scs.session, continueAfterPLAY, scs.session->absStartTime(), scs.session->absEndTime());
     } else {
+        TRACK("absStartTime else");
+
         scs.duration = scs.session->playEndTime() - scs.session->playStartTime();
         rtspClient->sendPlayCommand(*scs.session, continueAfterPLAY);
     }
@@ -641,8 +647,15 @@ void DummySink::afterGettingFrame(void* clientData, unsigned frameSize, unsigned
 }
 
 // If you don't want to see debugging output for each received frame, then comment out the following line:
-#define DEBUG_PRINT_EACH_RECEIVED_FRAME 0
-
+#define DEBUG_PRINT_EACH_RECEIVED_FRAME 1
+unsigned int mConfigFlags;
+const unsigned int VPS_CONFIG_MASK = 1 << 0;
+const unsigned int SPS_CONFIG_MASK = 1 << 1;
+const unsigned int PPS_CONFIG_MASK = 1 << 2;
+const unsigned int VPS_SPS_PPS_MASK = VPS_CONFIG_MASK | SPS_CONFIG_MASK | PPS_CONFIG_MASK;
+std::shared_ptr<Nalu> mpVps;
+std::shared_ptr<Nalu> mpSps;
+std::shared_ptr<Nalu> mpPps;
 void DummySink::afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes,
                                   struct timeval presentationTime, unsigned /*durationInMicroseconds*/) {
     // We've just received a frame of data.  (Optionally) print out information about it:
@@ -668,7 +681,63 @@ void DummySink::afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes
         char type = fReceiveBuffer[0]  & ((1<<5)-1); //过滤掉 结束符, 某些h264流中有 00 00 01 09 ，不带数据
         if(type != 9 )
         {
-            g_pQueue->push(fReceiveBuffer,frameSize);
+//            TRACK("afterGettingFrame,g_pQueue->push");
+//            Nalu * pNalu = NULL;
+//std::shared_ptr<>
+            std::shared_ptr<Nalu> pNalu = std::make_shared<Nalu>();
+            pNalu->SetEBSP(fReceiveBuffer, frameSize);
+            //pNalu->Dump("FeedConfig");
+
+            if (pNalu->IsVps()) {
+                mpVps = pNalu;
+                LOGD("nalutype123 IsVps");
+                //pNalu->Dump("OnFrame::VPS");
+                mConfigFlags |= VPS_CONFIG_MASK;
+            } else if (pNalu->IsSps()) {
+                mpSps = pNalu;
+                LOGD("nalutype123 IsSps");
+                //pNalu->Dump("OnFrame::SPS");
+                mConfigFlags |= SPS_CONFIG_MASK;
+            } else if (pNalu->IsPps()) {
+                mpPps = pNalu;
+                LOGD("nalutype123 IsPps");
+                //pNalu->Dump("OnFrame::PPS");
+                mConfigFlags |= PPS_CONFIG_MASK;
+            }else if(pNalu->IsIdr()){
+                LOGD("nalutype123 IsIdr");
+            }else if(pNalu->IsP()){
+                LOGD("nalutype123 IsP");
+            }else{
+                int type = pNalu->GetNaluType();
+                LOGD("nalutype123 else:%d",type);
+            }
+            if (mConfigFlags == VPS_SPS_PPS_MASK) {
+                TRACK("[OnFrame]Config Frame(VPS|SPS|PPS)");
+//                FeedConfig(0);
+//拼接开始
+                std::vector<unsigned char> confData;
+                size_t dataLen;
+                auto pVpsData = mpVps->GetData(&dataLen);
+                confData.assign(pVpsData, pVpsData + dataLen);
+                auto pSpsData = mpSps->GetData(&dataLen);
+                confData.insert(confData.end(), pSpsData, pSpsData + dataLen);
+                auto pPpsData = mpPps->GetData(&dataLen);
+                confData.insert(confData.end(), pPpsData, pPpsData + dataLen);
+                std::shared_ptr<Nalu> pNalu1 = std::make_shared<Nalu>();
+                pNalu1->SetEBSP(confData.data(), confData.size());
+                //pNalu1->Dump("FeedConfig");
+                size_t naluLen1;
+                g_pQueue->push(pNalu1->GetData(&naluLen1),naluLen1, true);
+//拼接结束
+                mConfigFlags = 0;
+            } else if (mConfigFlags == 0) {
+//                mpComposer->Feed(pFrameInfo);
+                size_t naluLen;
+                g_pQueue->push(pNalu->GetData(&naluLen),naluLen, false);
+            } else {
+                TRACK("[OnFrame]Waiting Config Frame(VPS|SPS|PPS):%zu", mConfigFlags);
+            }
+
         }
 
     }

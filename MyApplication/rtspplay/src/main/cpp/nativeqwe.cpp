@@ -37,79 +37,86 @@ extern "C"
 JNIEXPORT jint JNICALL
 Java_com_example_rtspplay_rtsp_1player_1can_JniUtils_GetH264Frame(JNIEnv *env, jobject thiz,
                                                                   jbyteArray buf, jint buflen) {
-//    int datalen =0;
-//#if TEST_FROM_FILE
-//    if(!bInit)
-//    {
-//        bInit = 1;
-//        init();
-//       gbuffer = (uint8_t*)malloc(CACH_LEN);
-//    }
-//
-//
-//    do{
-//        datalen = getOneNal(gbuffer,CACH_LEN);
-//    }while(checkNal(gbuffer[4]) == NALU_TYPE_AUD); //过滤掉结束符，注意这里不是指 audio ,只是h264的一种nal类型
-//    //}while(0);
-//
-//    //输出太快，解码器器会丢帧，导致花屏
-//    usleep(1000*1000/30); //帧率30
-//
-//    #if 0// for .c
-//        (*env)->SetByteArrayRegion(env, buf, 0, datalen,(jbyte *)gbuffer);
-//    #else //for  .cpp
-//        env->SetByteArrayRegion( buf, 0, datalen,(jbyte *)gbuffer);
-//    #endif
-//
-//    return datalen;
-//#else
-//    if(!bInit)
-//    {
-//        TRACK("live555_start");
-//        bInit = 1;
-//        // if( live555_start("rtsp://192.168.43.1:10086/stream") == -1)
-//        if( live555_start("rtsp://192.168.49.40:10086/stream") == -1)
-//        {
-//            TRACK("live555_start erro \n");
-//            bInit =0;
-//        }
-//
-//    }
-//
-//    unsigned char *pdata;
-//    int bufIndex = 0;
-//
-//    bufIndex = live555_requestFrameBuffer(&pdata, &datalen);
-//    do {
-//        if (buf != NULL) {// rtp包中没有nal 标记,需要自己添加
+    int datalen =0;
+#if TEST_FROM_FILE
+    if(!bInit)
+    {
+        bInit = 1;
+        init();
+       gbuffer = (uint8_t*)malloc(CACH_LEN);
+    }
+
+
+    do{
+        datalen = getOneNal(gbuffer,CACH_LEN);
+    }while(checkNal(gbuffer[4]) == NALU_TYPE_AUD); //过滤掉结束符，注意这里不是指 audio ,只是h264的一种nal类型
+    //}while(0);
+
+    //输出太快，解码器器会丢帧，导致花屏
+    usleep(1000*1000/30); //帧率30
+
+    #if 0// for .c
+        (*env)->SetByteArrayRegion(env, buf, 0, datalen,(jbyte *)gbuffer);
+    #else //for  .cpp
+        env->SetByteArrayRegion( buf, 0, datalen,(jbyte *)gbuffer);
+    #endif
+
+    return datalen;
+#else
+    if(!bInit)
+    {
+        TRACK("live555_start");
+        bInit = 1;
+        // if( live555_start("rtsp://192.168.43.1:10086/stream") == -1)
+//        if( live555_start("rtsp://10.2.11.68:554/test.264") == -1)
+//        if( live555_start("rtsp://172.20.100.22/surfing.265") == -1)
+//        if( live555_start("rtsp://192.168.0.101:554/test123.265") == -1)
+        if( live555_start("rtsp://192.168.0.101:554/testfile.265") == -1)
+            //"rtsp://172.20.100.22/surfing.265";
+        {
+            TRACK("live555_start erro \n");
+            bInit =0;
+        }
+
+    }
+
+    unsigned char *pdata;
+    int bufIndex = 0;
+    bool isConfig = 0;
+    bufIndex = live555_requestFrameBuffer(&pdata, &datalen,&isConfig);
+
+    do {
+        if (buf != NULL) {// rtp包中没有nal 标记,需要自己添加
 //            unsigned char nal[4]={0x00,0x00,0x00,0x01};
 //            env->SetByteArrayRegion(buf, 0, 4, (jbyte *) nal);
-//            env->SetByteArrayRegion(buf, 4, datalen, (jbyte *) pdata);
-//        }
-//    }while(0);
-//    live555_releaseBuffer(bufIndex);
-//
-//    return datalen+4;
-//
-//#endif
+            env->SetByteArrayRegion(buf, 0, datalen, (jbyte *) pdata);
+            if(isConfig){
+                TRACK("nativeqwe,datalen:%d",datalen);
+            }
+        }
+    }while(0);
+    live555_releaseBuffer(bufIndex);
 
-    return 0;
+    return datalen;
+
+#endif
+
 }
 extern "C"
 JNIEXPORT jint JNICALL
 Java_com_example_rtspplay_rtsp_1player_1can_JniUtils_OpenUrl(JNIEnv *env, jobject thiz,
                                                              jstring url) {
-//    if (bInit) {
-//        //this will block until the live555 thread over
-//        live555_stop();
-//    }
-//
-//    char *pUrl = NULL;
-//    pUrl = jstringToChar(env, url);
-//    if (pUrl) {
-//        live555_start(pUrl);
-//        free(pUrl);
-//    }
+    if (bInit) {
+        //this will block until the live555 thread over
+        live555_stop();
+    }
+
+    char *pUrl = NULL;
+    pUrl = jstringToChar(env, url);
+    if (pUrl) {
+        live555_start(pUrl);
+        free(pUrl);
+    }
 
     return 0;
 }

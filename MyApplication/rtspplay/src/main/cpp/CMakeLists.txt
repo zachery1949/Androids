@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.4.1)
-
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #导入头文件的路径 自动查看头文件 <>  <faac.h>
 include_directories(jniLibs/arm64-v8a/include/BasicUsageEnvironment/include
@@ -20,6 +21,7 @@ add_library(
         nativeqwe.cpp
         live555.cpp
         queue.cpp
+        Nalu.cpp
 )
 
 target_link_libraries(
@@ -28,6 +30,5 @@ target_link_libraries(
         BasicUsageEnvironment
         UsageEnvironment
         groupsock
-        c++abi
         mediandk
         log)

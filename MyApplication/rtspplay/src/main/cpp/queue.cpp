@@ -83,7 +83,7 @@ int CQueue::pop(uint8_t *data,int len)
 	return copylen;
 }
 
-int CQueue::push(uint8_t *data,int len)
+int CQueue::push(const unsigned char*data,int len,bool isConfig)
 {
 	//DEBUG("in %d out %d len %d\n ",mInindex,mOutindex,len);
 	int iIn = mInindex;
@@ -96,6 +96,7 @@ int CQueue::push(uint8_t *data,int len)
 	{
 		memcpy(que[iIn].data,data,copylen);
 		que[iIn].datalen = copylen;
+        que[iIn].isConfig = isConfig;
 		if(copylen < len)
 		{
 			DEBUG("Buffer single frame too short ! Buffer_frame_len:%d,data_len:%d \n ",sizeof(que[iIn].data),len);
@@ -118,7 +119,7 @@ int CQueue::push(uint8_t *data,int len)
 
 }
 
-int CQueue::getbuffer(uint8_t **pdata,int *plen)
+int CQueue::getbuffer(uint8_t **pdata,int *plen,bool *isConig)
 {
 	int val=0;
 	sem_wait(&mSem);
@@ -139,7 +140,7 @@ int CQueue::getbuffer(uint8_t **pdata,int *plen)
 
 	*pdata = que[iout].data;
 	*plen =  que[iout].datalen;
-	
+	*isConig = que[iout].isConfig;
 	addOutindex();
 	//DEBUG("in %d out %d len %d unlock \n ",mInindex,mOutindex,len);
 	//pthread_mutex_unlock(ilock);
