@@ -8,9 +8,14 @@
 
     <VideoView
         android:id="@+id/videoView"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
-
+<SurfaceView
+    android:id="@+id/sv_player"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+</SurfaceView>
 </RelativeLayout>

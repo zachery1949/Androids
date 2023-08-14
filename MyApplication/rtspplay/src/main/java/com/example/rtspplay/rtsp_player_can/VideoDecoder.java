@@ -86,7 +86,7 @@ public class VideoDecoder  {
             while (isRunning) {
                 //Log.i("TRACK","getdat befor!");
                 int len = dataProvide.getNal(dataBuf, dataBuf.length);
-                Log.i("TRACK", "getdat123 after:"+len);
+                //Log.i("TRACK", "getdat123 after:"+len);
                 if(len == -1){
                     //eof
                     decodeEnd();
@@ -202,7 +202,7 @@ public class VideoDecoder  {
                 }
                 decoder.queueInputBuffer(inputBufferIndex, offset1, length,0,
                         flag);
-                Log.i(TAG, "decode,queueInputBuffer, length:"+length);
+//                Log.i(TAG, "decode,queueInputBuffer, length:"+length);
             }else {
                 Log.i(DECODE, "video getInput timeout ----------to drop");
             }
