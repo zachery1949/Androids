@@ -38,3 +38,7 @@ Uri uri = Uri.fromParts("package", getPackageName(), null);
 intent.setData(uri);
 startActivity(intent);
 }
+
+h264分析工具
+https://blog.csdn.net/weixin_43313383/article/details/124293602
+从H.264码流中一眼读出其Profile和Level - 简书
