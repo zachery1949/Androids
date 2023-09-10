@@ -25,6 +25,7 @@ add_library(
         live555.cpp
         queue.cpp
         Nalu.cpp
+        MyRTSPClient.cpp
         nativevcamera.cpp
 )
 
