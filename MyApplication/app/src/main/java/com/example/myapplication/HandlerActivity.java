@@ -19,9 +19,9 @@ public class HandlerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_handler);
         textView = findViewById(R.id.tv_content);
-        MysThread mysThread = new MysThread("fenzhis");
-        mysThread.start();
-////        MyThread myThread = new MyThread("fenzhi");
+//        MysThread mysThread = new MysThread("fenzhis");
+//        mysThread.start();
+        MyThread myThread = new MyThread("fenzhi");
 //        Worker myThread = new Worker("fenzhi");
 ////        HandlerThread myThread = new HandlerThread("fenzhi");
 //        //myThread.start();

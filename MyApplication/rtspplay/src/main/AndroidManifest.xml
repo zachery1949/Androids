@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
         <activity
-            android:name=".rtsp_player_can.MainActivity2"
+            android:name=".rtsp_player_can.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

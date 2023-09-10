@@ -71,7 +71,7 @@ Java_com_example_rtspplay_rtsp_1player_1can_JniUtils_GetH264Frame(JNIEnv *env, j
 //        if( live555_start("rtsp://10.2.11.68:554/test.264") == -1)
 //        if( live555_start("rtsp://172.20.100.22/surfing.265") == -1)
 //        if( live555_start("rtsp://192.168.0.101:554/test123.265") == -1)
-        if( live555_start("rtsp://192.168.0.101:554/testfile.265") == -1)
+        if( live555_start("rtsp://192.168.0.105:554/testfile.265") == -1)
             //"rtsp://172.20.100.22/surfing.265";
         {
             TRACK("live555_start erro \n");
