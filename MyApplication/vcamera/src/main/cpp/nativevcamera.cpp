@@ -1,5 +1,5 @@
 #include <jni.h>
-#include "live555.h"
+
 
 
 extern "C"
@@ -17,5 +17,5 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_vcamera_JniUtils_liveStart(JNIEnv *env, jobject thiz) {
     // TODO: implement liveStart()
-    live555_start("rtsp://192.168.0.105:554/testfile.265");
+    //live555_start("rtsp://192.168.0.105:554/testfile.265");
 }

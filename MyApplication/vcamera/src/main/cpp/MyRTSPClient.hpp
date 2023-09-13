@@ -1,13 +1,10 @@
 #ifndef MY_RTSP_CLIENT_HPP
 #define MY_RTSP_CLIENT_HPP
 #include "IRtspClient.hpp"
+
+
+#include "jniLibs/arm64-v8a/include/BasicUsageEnvironment/include/BasicUsageEnvironment.hh"
 #include "jniLibs/arm64-v8a/include/liveMedia/include/RTSPClient.hh"
-#include "jniLibs/arm64-v8a/include/UsageEnvironment/include/UsageEnvironment.hh"
-#include "jniLibs/arm64-v8a/include/groupsock/include/NetAddress.hh"
-#include "jniLibs/arm64-v8a/include/liveMedia/include/MediaSink.hh"
-#include "jniLibs/arm64-v8a/include/liveMedia/include/MediaSession.hh"
-
-
 
 namespace VCAMERA {
 

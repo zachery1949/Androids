@@ -22,7 +22,7 @@ add_library(
 
         # Sets the library as a shared library.
         SHARED
-        live555.cpp
+
         queue.cpp
         Nalu.cpp
         MyRTSPClient.cpp
